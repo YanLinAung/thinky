@@ -761,6 +761,29 @@ describe('Model', function(){
             Cat.on('test', function() {});
             Cat.getModel()._listeners['test'].should.have.length(2);
         });
+
+        it('should be able to work for saving', function(done) {
+            var Cat = thinky.createModel('Cat', {id: String, name: String, createdAt: Date, updatedAt: Date});
+            Cat.on("saving", function(doc) {
+                if (doc.isSaved()) {
+                    doc["updatedAt"] = new Date();
+                }
+                else {
+                    doc["createdAt"] = new Date();
+                }
+            })
+
+            var catou = new Cat({name: "Catou"});
+            catou.save(function(error, result) {
+                should.exist(catou.createdAt);
+                should.not.exist(catou.updatedAt);
+                catou.save(function(error, result) {
+                    should.exist(catou.createdAt);
+                    should.exist(catou.updatedAt);
+                    done()
+                });
+            });
+        });
     });
 
     describe('off', function() {

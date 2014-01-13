@@ -227,17 +227,30 @@ describe('Document', function(){
    
 
         // Testing events with save
-        it('should emit the event `save` on insert', function(done){
+        it('should emit the event `saved` on insert', function(done){
             var Cat = thinky.createModel('Cat', { id: String, name: String });
             var catName = 'Catou'
             var catou = new Cat({name: catName});
-            catou.on('save', function(doc) {
+            catou.on('saving', function(doc, oldDoc) {
                 should.equal(doc.name, catName);
                 done();
             });
             catou.save();
         });
-        it('should emit the event `save` on update', function(done) {
+        it('should emit the event `saving` on insert', function(done){
+            var Cat = thinky.createModel('Cat', { id: String, name: String });
+            var catName = 'Catou'
+            var catou = new Cat({name: catName});
+            catou.on('saving', function(doc, copyDoc) {
+                should.equal(doc.name, catName);
+                should.equal(copyDoc.name, catou.name);
+                should.not.exist(copyDoc.id);
+                done();
+            });
+            catou.save();
+        });
+
+        it('should emit the event `saved` on update', function(done) {
             var Cat = thinky.createModel('Cat', { id: String, name: String });
             var oldName = 'Catou I';
             var newName = 'Catou II';
@@ -247,7 +260,7 @@ describe('Document', function(){
                 if (error) throw error;
                 catou.name = newName;
                 
-                catou.on('save', function(doc, oldDoc) {
+                catou.on('saved', function(doc, oldDoc) {
                     should.equal(doc.name, newName);
                     should.equal(oldDoc.name, oldName);
                     done();
