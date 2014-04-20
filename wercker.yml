@@ -5,8 +5,6 @@ services:
 build:
   # The steps that will be executed on build
   steps:
-    - apt-get install libprotobuf-dev
-    - script: |
-      sudo apt-get install libprotobuf-dev
+    - sudo apt-get install libprotobuf-dev
     - npm-install
     - npm-test
