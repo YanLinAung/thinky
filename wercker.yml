@@ -1,10 +1,6 @@
-box: wercker/nodejs
-services:
-    - mies/rethinkdb
-# Build definition
+box: neumino/box-thinky
 build:
   # The steps that will be executed on build
   steps:
-    - sudo apt-get install libprotobuf-dev
     - npm-install
     - npm-test
